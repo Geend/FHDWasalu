@@ -60,7 +60,43 @@ constant one : std_logic_vector(3 downto 0) 		:= "1101";
 begin
 
 
+	equalP: process(clk, a, b)
+	begin
+		if(rising_edge(clk)) then
+			if(a=b)then
+				equal <= '1';
+			else
+				equal <= '0';
+				
+		end if;
+	end process;
+
+
+	process(clk, a, b, cmd)
+	begin
+		if(rising_edge(clk)) then
+		
+			case cmd is
+				when add =>
+				when AsubB =>
+				when BsubA =>
+				when idA =>
+				when idB  =>
+				when negA =>
+				when negB =>
+				when sllA =>
+				when slrA =>
+				when rllA =>
+				when rlrA =>
+				when mul =>
+				when zero =>
+				when one =>
+				when others =>
+			end case;
+		
+		end if;
 	
+	end process
 
 end architecture1;
 
