@@ -64,7 +64,7 @@ begin
 				equal <= '1';
 			else
 				equal <= '0';
-				
+			end if;
 		end if;
 	end process;
 
