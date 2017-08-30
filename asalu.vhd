@@ -42,8 +42,25 @@ end asalu;
 
 architecture architecture1 of asalu is
 
+constant add : std_logic_vector(3 downto 0) 		:= "0000";
+constant AsubB : std_logic_vector(3 downto 0)	:= "0001";
+constant BsubA : std_logic_vector(3 downto 0)	:= "0010";
+constant idA : std_logic_vector(3 downto 0)		:= "0011";
+constant idB : std_logic_vector(3 downto 0)		:= "0100";
+constant negA : std_logic_vector(3 downto 0)		:= "0101";
+constant negB : std_logic_vector(3 downto 0)		:= "0110";
+constant sllA : std_logic_vector(3 downto 0) 	:= "0111";
+constant slrA : std_logic_vector(3 downto 0) 	:= "1000";
+constant rllA : std_logic_vector(3 downto 0) 	:= "1001";
+constant rlrA : std_logic_vector(3 downto 0) 	:= "1010";
+constant mul : std_logic_vector(3 downto 0)		:= "1011";
+constant zero : std_logic_vector(3 downto 0) 	:= "1100";
+constant one : std_logic_vector(3 downto 0) 		:= "1101";
+
 begin
 
 
-end Behavioral;
+	
+
+end architecture1;
 
