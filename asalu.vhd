@@ -68,6 +68,7 @@ begin
 			else
 				equal <= '0';
 				
+			end if;
 		end if;
 	end process;
 
@@ -96,7 +97,7 @@ begin
 		
 		end if;
 	
-	end process
+	end process;
 
-end architecture1;
+end architecture;
 
