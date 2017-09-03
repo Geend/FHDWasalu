@@ -54,8 +54,15 @@ constant mul : std_logic_vector(3 downto 0)		:= "1011";
 constant zero : std_logic_vector(3 downto 0) 	:= "1100";
 constant one : std_logic_vector(3 downto 0) 		:= "1101";
 
+
+
+signal sflow: signed (7 downto 0) := "00000000";
+signal sfhigh: signed (7 downto 0) := "00000000";
+
 begin
 
+	flow <= std_logic_vector(sflow);
+	fhigh <= std_logic_vector(sfhigh);
 
 	equalP: process(clk, a, b)
 	begin
@@ -70,24 +77,49 @@ begin
 
 
 	process(clk, a, b, cmd)
+	variable sA : signed (7 downto 0) := signed(a);
+	variable sB : signed (7 downto 0) := signed(b);
+	variable sOut: signed (15 downto 0) := "0000000000000000";
+
+	
 	begin
 		if(rising_edge(clk)) then
 		
 			case cmd is
-				when add =>
+				when add =>					
+					sOut := sA +sB;					
+					sflow <= sOut (7 downto 0);
+					sfhigh <= sOut (15 downto 8);
+
+					cOut <= sOut (8);
+
 				when AsubB =>
+					sflow <= sA - sB;
 				when BsubA =>
+					sflow <= sB - sA;
 				when idA =>
+					sflow <= sA;
+					sfhigh <= "00000000";
 				when idB  =>
+					sflow <= sB;
+					sfhigh <= "00000000";
 				when negA =>
+					sflow <= -sA;
+					sfhigh <= "00000000";
 				when negB =>
+					sflow <= -sB;
+					sfhigh <= "00000000";
 				when sllA =>
 				when slrA =>
 				when rllA =>
 				when rlrA =>
 				when mul =>
 				when zero =>
+					sflow <= "00000000";
+					sfhigh <= "00000000";
 				when one =>
+					sflow <= "00000001";
+					sfhigh <= "00000000";
 				when others =>
 			end case;
 		
