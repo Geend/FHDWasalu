@@ -1,0 +1,18 @@
+A: 00000000 B: 00000000 CMD: 0000 |                     FHigh: e                    FLow: e      Cout: e      OF: e      Equal: e       Zero: et: 125 ns
+A: 00000001 B: 00000001 CMD: 0000 |                     FHigh: e                    FLow: e      Cout: e      OF: e      Equal: e       Zero: et: 175 ns
+A: 00000011 B: 00000011 CMD: 0000 | FHigh: e00000000 a00000000, FLow: e00000010 a00000010, Cout: e0 a0, OF: e0 a0, Equal: e1 a1, Zero: e0 a0 | t: 225 ns
+A: 00000111 B: 00000111 CMD: 0000 | FHigh: e00000000 a00000000, FLow: e00000110 a00000110, Cout: e0 a0, OF: e0 a0, Equal: e1 a1, Zero: e0 a0 | t: 275 ns
+A: 11100101 B: 00000100 CMD: 0000 | FHigh: e00000000 a00000000, FLow: e00001110 a00001110, Cout: e0 a0, OF: e0 a0, Equal: e1 a1, Zero: e0 a0 | t: 325 ns
+A: 00001101 B: 11111101 CMD: 0000 | FHigh: e00000000 a00000000, FLow: e11101001 a11101001, Cout: e0 a1, OF: e0 a0, Equal: e0 a0, Zero: e0 a0 | t: 375 ns
+A: 11110111 B: 00001001 CMD: 0000 | FHigh: e00000000 a00000000, FLow: e00001010 a00001010, Cout: e0 a0, OF: e0 a0, Equal: e0 a0, Zero: e0 a0 | t: 425 ns
+A: 11011100 B: 00000000 CMD: 0011 | FHigh: e00000000 a00000000, FLow: e00000000 a00000000, Cout: e0 a0, OF: e0 a0, Equal: e0 a0, Zero: e1 a0 | t: 475 ns
+A: 11011100 B: 11011100 CMD: 0011 | FHigh: e00000000 a00000000, FLow: e11011100 a11011100, Cout: e0 a0, OF: e0 a0, Equal: e0 a0, Zero: e0 a0 | t: 525 ns
+A: 00000000 B: 00000000 CMD: 0011 | FHigh: e00000000 a00000000, FLow: e11011100 a11011100, Cout: e0 a0, OF: e0 a0, Equal: e1 a1, Zero: e0 a0 | t: 575 ns
+A: 00000000 B: 00000000 CMD: 0011 | FHigh: e00000000 a00000000, FLow: e00000000 a00000000, Cout: e0 a0, OF: e0 a0, Equal: e1 a1, Zero: e1 a1 | t: 625 ns
+A: 00000000 B: 00000000 CMD: 0011 | FHigh: eXXXXXXXX a00000000, FLow: eXXXXXXXX a00000000, Cout: eX a0, OF: eX a0, Equal: eX a1, Zero: eX a1 | t: 675 ns
+A: 00000000 B: 00000000 CMD: 0011 | FHigh: eXXXXXXXX a00000000, FLow: eXXXXXXXX a00000000, Cout: eX a0, OF: eX a0, Equal: eX a1, Zero: eX a1 | t: 725 ns
+A: 00000000 B: 00000000 CMD: 0011 | FHigh: eXXXXXXXX a00000000, FLow: eXXXXXXXX a00000000, Cout: eX a0, OF: eX a0, Equal: eX a1, Zero: eX a1 | t: 775 ns
+A: 00000000 B: 00000000 CMD: 0011 | FHigh: eXXXXXXXX a00000000, FLow: eXXXXXXXX a00000000, Cout: eX a0, OF: eX a0, Equal: eX a1, Zero: eX a1 | t: 825 ns
+A: 00000000 B: 00000000 CMD: 0011 | FHigh: eXXXXXXXX a00000000, FLow: eXXXXXXXX a00000000, Cout: eX a0, OF: eX a0, Equal: eX a1, Zero: eX a1 | t: 875 ns
+A: 00000000 B: 00000000 CMD: 0011 | FHigh: eXXXXXXXX a00000000, FLow: eXXXXXXXX a00000000, Cout: eX a0, OF: eX a0, Equal: eX a1, Zero: eX a1 | t: 925 ns
+A: 00000000 B: 00000000 CMD: 0011 | FHigh: eXXXXXXXX a00000000, FLow: eXXXXXXXX a00000000, Cout: eX a0, OF: eX a0, Equal: eX a1, Zero: eX a1 | t: 975 ns

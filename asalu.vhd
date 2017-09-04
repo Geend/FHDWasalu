@@ -19,7 +19,9 @@
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-use IEEE.NUMERIC_STD.ALL;
+--use IEEE.NUMERIC_STD.ALL;
+use ieee.std_logic_arith.all;
+use ieee.std_logic_unsigned.all;
 
 -- Uncomment the following library declaration if instantiating
 -- any Xilinx primitives in this code.
@@ -33,8 +35,10 @@ entity asalu is
            cmd : in  STD_LOGIC_VECTOR (3 downto 0);
            flow : out  STD_LOGIC_VECTOR (7 downto 0);
            fhigh : out  STD_LOGIC_VECTOR (7 downto 0);
-           cout : out  STD_LOGIC;
-           equal : out  STD_LOGIC);
+           coutF : out  STD_LOGIC;
+			  overflowF : out STD_LOGIC;				
+           equalF : out  STD_LOGIC;
+			  zeroF : out  STD_LOGIC);
 end asalu;
 
 architecture architecture1 of asalu is
@@ -61,16 +65,27 @@ signal sfhigh: signed (7 downto 0) := "00000000";
 
 begin
 
-	flow <= std_logic_vector(sflow);
-	fhigh <= std_logic_vector(sfhigh);
+	--flow <= std_logic_vector(sflow);
+	--fhigh <= std_logic_vector(sfhigh);
 
 	equalP: process(clk, a, b)
 	begin
 		if(rising_edge(clk)) then
 			if(a=b)then
-				equal <= '1';
+				equalF<= '1';
 			else
-				equal <= '0';
+				equalF <= '0';
+			end if;
+		end if;
+	end process;
+
+	zeroP: process(clk, a)
+	begin
+		if(rising_edge(clk)) then
+			if(a= "00000000")then
+				zeroF<= '1';
+			else
+				zeroF <= '0';
 			end if;
 		end if;
 	end process;
@@ -79,47 +94,142 @@ begin
 	process(clk, a, b, cmd)
 	variable sA : signed (7 downto 0) := signed(a);
 	variable sB : signed (7 downto 0) := signed(b);
-	variable sOut: signed (15 downto 0) := "0000000000000000";
-
+	variable sOut: std_logic_vector (15 downto 0) := "0000000000000000";
 	
+	
+	variable addA : std_logic_vector(8 downto 0) := "000000000";
+	variable addB : std_logic_vector(8 downto 0) := "000000000";
+	variable addSum : std_logic_vector(8 downto 0) := "000000000";
+	
+	
+	variable mulA : std_logic_vector(15 downto 0) := "0000000000000000";
+	variable mulB : std_logic_vector(15 downto 0) := "0000000000000000";
+	variable prodMul : std_logic_vector(31 downto 0) := "00000000000000000000000000000000";
+
 	begin
 		if(rising_edge(clk)) then
 		
 			case cmd is
 				when add =>					
-					sOut := sA +sB;					
-					sflow <= sOut (7 downto 0);
-					sfhigh <= sOut (15 downto 8);
-
-					cOut <= sOut (8);
-
+				
+					addA(8) := a(7);
+					addA(7 downto 0) := a;
+					
+					addB(8) := b(7);
+					addB(7 downto 0) := b;
+					
+					addSum := addA + addB;
+					
+					flow <= addSum (7 downto 0);
+					overflowF <= addSum(8) xor addSum(7);					
+			
+					coutF <= addSum (8);
+					fhigh <= "00000000";
+					
 				when AsubB =>
-					sflow <= sA - sB;
+					addA(8) := a(7);
+					addA(7 downto 0) := a;
+					
+					addB(8) := not b(7);
+					addB(7 downto 0) := not b;
+					
+					addSum := addA + addB +1;
+					
+					flow <= addSum (7 downto 0);
+					overflowF <= addSum(8) xor addSum(7);					
+			
+					coutF <= addSum (8);
+					
+					fhigh <= "00000000";
+					
 				when BsubA =>
-					sflow <= sB - sA;
+
+					addA(8) := not a(7);
+					addA(7 downto 0) := not a;
+					
+					addB(8) := b(7);
+					addB(7 downto 0) := b;
+					
+					addSum := addA + addB +1;
+					
+					flow <= addSum (7 downto 0);
+					overflowF <= addSum(8) xor addSum(7);					
+			
+					coutF <= addSum (8);
+					
+					fhigh <= "00000000";
+					
 				when idA =>
-					sflow <= sA;
-					sfhigh <= "00000000";
+					flow <= a;
+					fhigh <= "00000000";
+					
 				when idB  =>
-					sflow <= sB;
-					sfhigh <= "00000000";
+					flow <= b;
+					fhigh <= "00000000";
+					
 				when negA =>
-					sflow <= -sA;
-					sfhigh <= "00000000";
+					flow <= (not a) + 1;
+					fhigh <= "00000000";
+					
 				when negB =>
-					sflow <= -sB;
-					sfhigh <= "00000000";
+					flow <= (not b) + 1;
+					fhigh <= "00000000";
+					
 				when sllA =>
+					flow(7 downto 1) <= a(6 downto 0);
+					flow(0) <= '0';				
+					fhigh <= "00000000";
+					
 				when slrA =>
+					flow(6 downto 0) <= a(7 downto 1);
+					flow(7) <= '0';	
+					fhigh <= "00000000";
+					
 				when rllA =>
+					flow(7 downto 1) <= a(6 downto 0);
+					flow(0) <= a(7);
+					fhigh <= "00000000";
+					
 				when rlrA =>
+					flow(6 downto 0) <= a(7 downto 1);
+					flow(7) <= a(0);
+					fhigh <= "00000000";
+					
 				when mul =>
+				
+					mulA(15) := a(7);
+					mulA(14) := a(7);
+					mulA(13) := a(7);
+					mulA(12) := a(7);
+					mulA(11) := a(7);
+					mulA(10) := a(7);
+					mulA(9) := a(7);
+					mulA(8) := a(7);
+					mulA(7 downto 0) := a;
+					
+					mulB(15) := b(7);
+					mulB(14) := b(7);
+					mulB(13) := b(7);
+					mulB(12) := b(7);
+					mulB(11) := b(7);
+					mulB(10) := b(7);
+					mulB(9) := b(7);
+					mulB(8) := b(7);
+					mulB(7 downto 0) := b;
+					
+					
+					prodMul := mulA * mulB;					
+				
+					flow <= prodMul (7 downto 0);
+					fhigh <=  prodMul(15 downto 8);
+					
 				when zero =>
-					sflow <= "00000000";
-					sfhigh <= "00000000";
+					flow <= "00000000";
+					fhigh <= "00000000";
+					
 				when one =>
-					sflow <= "00000001";
-					sfhigh <= "00000000";
+					flow <= "00000001";
+					fhigh <= "00000000";
 				when others =>
 			end case;
 		

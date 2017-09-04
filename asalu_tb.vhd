@@ -42,7 +42,7 @@ ARCHITECTURE behavior OF asalu_tb IS
  
     -- Component Declaration for the Unit Under Test (UUT)
  
-    COMPONENT asalu
+   COMPONENT asalu
     PORT(
          clk : IN  std_logic;
          a : IN  std_logic_vector(7 downto 0);
@@ -50,13 +50,14 @@ ARCHITECTURE behavior OF asalu_tb IS
          cmd : IN  std_logic_vector(3 downto 0);
          flow : OUT  std_logic_vector(7 downto 0);
          fhigh : OUT  std_logic_vector(7 downto 0);
-         cout : OUT  std_logic;
-         equal : OUT  std_logic
+         coutF : OUT  std_logic;
+         overflowF : OUT  std_logic;
+         equalF : OUT  std_logic;
+			zeroF : OUT  std_logic
         );
     END COMPONENT;
-    
-
-   --Inputs
+	 
+  --Inputs
    signal clk : std_logic := '0';
    signal a : std_logic_vector(7 downto 0) := (others => '0');
    signal b : std_logic_vector(7 downto 0) := (others => '0');
@@ -65,8 +66,13 @@ ARCHITECTURE behavior OF asalu_tb IS
  	--Outputs
    signal flow : std_logic_vector(7 downto 0);
    signal fhigh : std_logic_vector(7 downto 0);
-   signal cout : std_logic;
-   signal equal : std_logic;
+   signal coutF : std_logic;
+   signal overflowF : std_logic;
+   signal equalF : std_logic;
+   signal zeroF : std_logic;
+
+   -- Clock period definitions
+   constant clk_period : time := 50 ns;
 
     --Functions
 FUNCTION char2std_logic (ch: IN CHARACTER) RETURN STD_LOGIC IS
@@ -128,88 +134,150 @@ begin
   return result;
 end std_logic2string;
 
-shared variable expected1 : STRING(8 DOWNTO 1);
-shared variable expected2 : STRING(8 DOWNTO 1);
-shared variable expected3 : CHARACTER;
-shared variable expected4 : CHARACTER;
+shared variable expectedFlow : STRING(8 DOWNTO 1);
+shared variable expectedFhigh : STRING(8 DOWNTO 1);
+shared variable expectedCoutF : CHARACTER;
+shared variable expectedOverflowF : CHARACTER;
+shared variable expectedEqualF : CHARACTER;
+shared variable expectedZeroF : CHARACTER;
+
+
 
 -- Testbench
 BEGIN
--- Taktgenerator
-clk <= NOT clk AFTER 50 ns;
 
-UUT: asalu PORT MAP(a=>a, b=>b, cmd=>cmd, flow=>flow, fhigh=>fhigh, cout=>cout, equal=>equal, clk=>clk);
+	-- Instantiate the Unit Under Test (UUT)
+   uut: asalu PORT MAP (
+          clk => clk,
+          a => a,
+          b => b,
+          cmd => cmd,
+          flow => flow,
+          fhigh => fhigh,
+          coutF => coutF,
+          overflowF => overflowF,
+          equalF => equalF,
+			 zeroF => zeroF
+        );
+
+   -- Clock process definitions
+   clk_process :process
+   begin
+		clk <= '0';
+		wait for clk_period/2;
+		clk <= '1';
+		wait for clk_period/2;
+   end process;
 
 STIMULI: PROCESS(clk)
   FILE testpattern: TEXT OPEN READ_MODE IS "stimuli.txt";
   VARIABLE zeile: LINE;
   VARIABLE leerzeichen: CHARACTER;
-  VARIABLE var1: STRING(8 DOWNTO 1);
-  VARIABLE var2: STRING(8 DOWNTO 1);
-  VARIABLE var3: STRING(4 DOWNTO 1);
+  VARIABLE varA: STRING(8 DOWNTO 1);
+  VARIABLE varB: STRING(8 DOWNTO 1);
+  VARIABLE varCmd: STRING(4 DOWNTO 1);
 BEGIN
-  IF(clk'EVENT AND clk = '1') THEN
+ IF(NOW > 100 ns) THEN
+  IF(rising_edge(clk)) THEN
     IF(NOT endfile(testpattern)) THEN
       readline(testpattern, zeile);
-      read(zeile, var1);
-      a <= string2std_logic(var1);
--- Überspringen des Leerzeichens
+      read(zeile, varA);
+      a <= string2std_logic(varA);
+		-- berspringen des Leerzeichens
       read(zeile, leerzeichen);
-      read(zeile, var2);
-      b <= string2std_logic(var2);
-		-- Überspringen des Leerzeichens
+      read(zeile, varB);
+      b <= string2std_logic(varB);
+		-- berspringen des Leerzeichens
       read(zeile, leerzeichen);
-      read(zeile, var3);
-      cmd <= string2std_logic(var3);
+      read(zeile, varCmd);
+      cmd <= string2std_logic(varCmd);
     END IF;
   END IF;
+  End if;
 END PROCESS STIMULI;
 
 RESPONSE: PROCESS(clk)
   FILE vergleichspattern: TEXT OPEN READ_MODE IS "expected.txt";
   VARIABLE zeile: LINE;
   VARIABLE leerzeichen: CHARACTER;
-  VARIABLE var1: STRING(8 DOWNTO 1);
-  VARIABLE var2: STRING(8 DOWNTO 1);
-  VARIABLE var3: CHARACTER;
-  VARIABLE var4: CHARACTER;
+  VARIABLE varFlow: STRING(8 DOWNTO 1);
+  VARIABLE varFhigh: STRING(8 DOWNTO 1);
+  VARIABLE varCout: CHARACTER;
+  VARIABLE varOverflow: CHARACTER;
+  VARIABLE varEqual: CHARACTER;
+  VARIABLE varZero: CHARACTER;
+
 BEGIN
-  IF(clk'EVENT AND clk = '1') THEN
-    IF(NOW > 100 ns) THEN
-      IF(NOT endfile(vergleichspattern)) THEN
+  
+
+  IF(rising_edge(clk)) THEN
+   IF(NOW > 180 ns) THEN
+      IF(NOT endfile(vergleichspattern)) THEN		
         readline(vergleichspattern, zeile);
-        read(zeile, var1);
-		  expected1 := var1;
-        ASSERT string2std_logic(var1) = flow
-          REPORT "Vergleich fehlerhaft!" & "  Erwartungswert: " & var1 & "  Ergebnis: " & std_logic2string(flow)
+		   
+		  --Fhigh
+			read(zeile, varFhigh);	
+		    expectedFhigh := varFhigh;
+        ASSERT string2std_logic(expectedFhigh) = fhigh
+          REPORT "Vergleich fehlerhaft!" & "  Erwartungswert: " & varFhigh & "  Ergebnis: " & std_logic2string(fhigh)
+          SEVERITY WARNING;			
+			
+		  --Flow
+		  read(zeile, leerzeichen);
+        read(zeile, varFlow);
+		  expectedFlow := varFlow;
+        ASSERT string2std_logic(expectedFlow) = flow
+          REPORT "Vergleich fehlerhaft!" & "  Erwartungswert: " & varFlow & "  Ergebnis: " & std_logic2string(flow)
           SEVERITY WARNING;
-			-- Überspringen des Leerzeichens
+			
+
+		    --Cout
+		  read(zeile, leerzeichen);		
+		  read(zeile, varCout);
+		  expectedCoutf := varCout;
+		  
+        ASSERT char2std_logic(expectedCoutf) = coutF
+          REPORT "Vergleich fehlerhaft!" & "  Erwartungswert: " & varCout & "  Ergebnis: " & std_logic2char(coutF)
+          SEVERITY WARNING;
+			
+		--Overflow
+		  read(zeile, leerzeichen);		
+		  read(zeile, varOverflow);
+		  expectedOverflowF := varOverflow;
+		  
+        ASSERT char2std_logic(expectedOverflowF) = overflowF
+          REPORT "Vergleich fehlerhaft!" & "  Erwartungswert: " & varOverflow & "  Ergebnis: " & std_logic2char(overflowF)
+          SEVERITY WARNING;
+			
+			
+			
+		  --Equal
+		  read(zeile, leerzeichen);		
+		  read(zeile, varEqual);
+		  expectedEqualF := varEqual;
+		  
+        ASSERT char2std_logic(expectedEqualF) = equalF
+          REPORT "Vergleich fehlerhaft!" & "  Erwartungswert: " & varEqual & "  Ergebnis: " & std_logic2char(equalF)
+          SEVERITY WARNING;
+			
+			
+			--Zero
 			read(zeile, leerzeichen);
-			read(zeile, var2);
-		  expected2 := var2;
-        ASSERT string2std_logic(var2) = fhigh
-          REPORT "Vergleich fehlerhaft!" & "  Erwartungswert: " & var2 & "  Ergebnis: " & std_logic2string(fhigh)
+			read(zeile, varZero);
+		  expectedZeroF := varZero;
+        ASSERT char2std_logic(expectedZeroF) = zeroF
+          REPORT "Vergleich fehlerhaft!" & "  Erwartungswert: " & varZero & "  Ergebnis: " & std_logic2char(zeroF)
           SEVERITY WARNING;
-			 -- Überspringen des Leerzeichens
-			read(zeile, leerzeichen);
-			read(zeile, var3);
-		  expected3 := var3;
-        ASSERT char2std_logic(var3) = cout
-          REPORT "Vergleich fehlerhaft!" & "  Erwartungswert: " & var3 & "  Ergebnis: " & std_logic2char(cout)
-          SEVERITY WARNING;
-			 -- Überspringen des Leerzeichens
-			read(zeile, leerzeichen);
-			read(zeile, var4);
-		  expected4 := var4;
-        ASSERT char2std_logic(var4) = equal
-          REPORT "Vergleich fehlerhaft!" & "  Erwartungswert: " & var4 & "  Ergebnis: " & std_logic2char(equal)
-          SEVERITY WARNING;
-		ELSE expected1 := (others => 'X');
-			  expected2 := (others => 'X');
-			  expected3 := 'X';
-			  expected4 := 'X';
+			 
+		ELSE expectedFlow := (others => 'X');
+			  expectedFHigh := (others => 'X');
+			  expectedCoutF := 'X';
+			  expectedOverflowF := 'X';
+			  expectedEqualF := 'X';
+			  expectedZeroF := 'X';
+
       END IF;
-    END IF;
+END IF;
   END IF;
 END PROCESS RESPONSE;
 
@@ -217,49 +285,54 @@ MONITOR: PROCESS(clk)
   FILE protokoll: TEXT OPEN WRITE_MODE IS "monitor.txt";
   VARIABLE zeile: LINE;
   VARIABLE leerzeichen: CHARACTER := ' ';
-  VARIABLE var1: STRING(8 DOWNTO 1);
-  VARIABLE var2: STRING(8 DOWNTO 1);
-  VARIABLE var3: STRING(4 DOWNTO 1);
-  VARIABLE var4: STRING(8 DOWNTO 1);
-  VARIABLE var5: STRING(8 DOWNTO 1);
-  VARIABLE var6: CHARACTER;
-  VARIABLE var7: CHARACTER;
+  VARIABLE varA: STRING(8 DOWNTO 1);
+  VARIABLE varB: STRING(8 DOWNTO 1);
+  VARIABLE varCmd: STRING(4 DOWNTO 1);
+  VARIABLE varFlow: STRING(8 DOWNTO 1);
+  VARIABLE varFHigh: STRING(8 DOWNTO 1);
+  VARIABLE varCoutF: CHARACTER;
+  VARIABLE varOverflowF: CHARACTER;
+  VARIABLE varEqualF: CHARACTER;
+  VARIABLE varZeroF: CHARACTER;
+
   VARIABLE simulationszeit: TIME;
 BEGIN
   IF(NOW > 100 ns) THEN
-    IF(clk'EVENT AND clk = '1') THEN
-      var1 := std_logic2string(a);
-		var2 := std_logic2string(b);
-		var3 := std_logic2string(cmd);
-		var4 := std_logic2string(flow);
-		var5 := std_logic2string(fhigh);
-		var6 := std_logic2char(cout);
-		var7 := std_logic2char(equal);
+  IF(rising_edge(clk)) THEN
+      varA := std_logic2string(a);
+		varB := std_logic2string(b);
+		varCmd := std_logic2string(cmd);
+		varFlow := std_logic2string(flow);
+		varFHigh := std_logic2string(fhigh);
+		varCoutF := std_logic2char(coutF);
+		varOverflowF := std_logic2char(overflowF);
+	   varEqualF := std_logic2char(equalF);
+		varZeroF := std_logic2char(zeroF);
+
       simulationszeit := NOW;
-      write(zeile, "A: " & var1);
+		--Inputs
+      write(zeile, "A: " & varA);
       write(zeile, leerzeichen);
-		write(zeile, "B: " & var2);
+		write(zeile, "B: " & varB);
       write(zeile, leerzeichen);
-		write(zeile, "CMD: " & var3);
+		write(zeile, "CMD: " & varCmd);
+		
       write(zeile, leerzeichen);
-		write(zeile, "ExpectedFLow: " & expected1);
+		write(zeile, "|");
       write(zeile, leerzeichen);
-		write(zeile, "ExpectedFHigh: " & expected2);
-      write(zeile, leerzeichen);
-		write(zeile, "ExpectedCout: " & expected3);
-      write(zeile, leerzeichen);
-		write(zeile, "ExpectedEqual: " & expected4);
-      write(zeile, leerzeichen);
-		write(zeile, "FLow: " & var4);
-      write(zeile, leerzeichen);
-		write(zeile, "FHigh: " & var5);
-      write(zeile, leerzeichen);
-		write(zeile, "Cout: " & var6);
-      write(zeile, leerzeichen);
-		write(zeile, "Equal: " & var7);
-      write(zeile, leerzeichen);
-      write(zeile, "Time: ");
+
+		--Outputs
+		write(zeile, "FHigh: e" & expectedFHigh & " a" & varFHigh & ", ");
+		write(zeile, "FLow: e" & expectedFlow & " a" & varFlow & ", ");
+		write(zeile, "Cout: e" & expectedCoutF & " a" & varCoutF & ", ");
+		write(zeile, "OF: e" & expectedOverflowF & " a" & varOverflowF & ", ");
+		write(zeile, "Equal: e" & expectedEqualF & " a" & varEqualF & ", ");
+		write(zeile, "Zero: e" & expectedZeroF & " a" & varZeroF & " | ");
+
+		--Time
+		write(zeile, "t: ");
 		write(zeile, simulationszeit);
+		
       writeline(protokoll, zeile);
     END IF;
   END IF;	 

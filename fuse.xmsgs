@@ -5,14 +5,5 @@
      behavior or data corruption.  It is strongly advised that
      users do not edit the contents of this file. -->
 <messages>
-<msg type="error" file="HDLCompiler" num="806" delta="unknown" >"D:/6.Semester/ES/Projekte/FHDWasalu/asalu.vhd" Line 69: Syntax error near &quot;<arg fmt="%s" index="1">process</arg>&quot;.
-</msg>
-
-<msg type="error" file="HDLCompiler" num="806" delta="unknown" >"D:/6.Semester/ES/Projekte/FHDWasalu/asalu.vhd" Line 73: Syntax error near &quot;<arg fmt="%s" index="1">begin</arg>&quot;.
-</msg>
-
-<msg type="error" file="HDLCompiler" num="806" delta="unknown" >"D:/6.Semester/ES/Projekte/FHDWasalu/asalu.vhd" Line 96: Syntax error near &quot;<arg fmt="%s" index="1">process</arg>&quot;.
-</msg>
-
 </messages>
 
