@@ -1,1 +1,1 @@
--intstyle "ise" -incremental -lib "secureip" -o "/home/torben/sync/FHDW/BES2-U2/vhdl/asalu/asalu_tb_isim_beh.exe" -prj "/home/torben/sync/FHDW/BES2-U2/vhdl/asalu/asalu_tb_beh.prj" "work.asalu_tb" 
+-intstyle "ise" -incremental -lib "secureip" -o "D:/6.Semester/ES/Projekte/FHDWasalu/asalu2_tb_isim_beh.exe" -prj "D:/6.Semester/ES/Projekte/FHDWasalu/asalu2_tb_beh.prj" "work.asalu2_tb" 
