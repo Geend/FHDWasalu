@@ -2,15 +2,15 @@
 -- Company: 
 -- Engineer:
 --
--- Create Date:   07:17:05 09/06/2017
+-- Create Date:   14:35:51 09/11/2017
 -- Design Name:   
--- Module Name:   D:/6.Semester/ES/Projekte/FHDWasalu/claAdder_tb.vhd
+-- Module Name:   D:/6.Semester/ES/Projekte/FHDWasalu/multiplier_tb.vhd
 -- Project Name:  asalu
 -- Target Device:  
 -- Tool versions:  
 -- Description:   
 -- 
--- VHDL Test Bench Created by ISE for module: claAdder
+-- VHDL Test Bench Created by ISE for module: multiplier
 -- 
 -- Dependencies:
 -- 
@@ -32,33 +32,29 @@ USE ieee.std_logic_1164.ALL;
 -- arithmetic functions with Signed or Unsigned values
 --USE ieee.numeric_std.ALL;
  
-ENTITY claAdder_tb IS
-END claAdder_tb;
+ENTITY multiplier_tb IS
+END multiplier_tb;
  
-ARCHITECTURE behavior OF claAdder_tb IS 
+ARCHITECTURE behavior OF multiplier_tb IS 
  
     -- Component Declaration for the Unit Under Test (UUT)
  
-    COMPONENT claAdder
+    COMPONENT multiplier
     PORT(
-         a : IN  std_logic_vector(7 downto 0);
-         b : IN  std_logic_vector(7 downto 0);
-			enable		: 	IN	  STD_LOGIC;
-         sum : OUT  std_logic_vector(7 downto 0);
-         carry_out : OUT  std_logic
+         x : IN  std_logic_vector(7 downto 0);
+         y : IN  std_logic_vector(7 downto 0);
+         result : OUT  std_logic_vector(15 downto 0)
         );
     END COMPONENT;
     
 
    --Inputs
-   signal a : std_logic_vector(7 downto 0) := (others => '0');
-   signal b : std_logic_vector(7 downto 0) := (others => '0');
-	signal enable		:   STD_LOGIC := '1';
+   signal x : std_logic_vector(7 downto 0) := (others => '0');
+   signal y : std_logic_vector(7 downto 0) := (others => '0');
 	signal clock: std_logic := '0';
 
  	--Outputs
-   signal sum : std_logic_vector(7 downto 0);
-   signal carry_out : std_logic;
+   signal result : std_logic_vector(15 downto 0);
    -- No clocks detected in port list. Replace <clock> below with 
    -- appropriate port name 
  
@@ -67,12 +63,10 @@ ARCHITECTURE behavior OF claAdder_tb IS
 BEGIN
  
 	-- Instantiate the Unit Under Test (UUT)
-   uut: claAdder PORT MAP (
-          a => a,
-          b => b,
-			 enable => enable,
-          sum => sum,
-          carry_out => carry_out
+   uut: multiplier PORT MAP (
+          x => x,
+          y => y,
+          result => result
         );
 
    -- Clock process definitions
@@ -89,23 +83,26 @@ BEGIN
    stim_proc: process
    begin		
       -- hold reset state for 100 ns.
-		enable <= '1';
       wait for 100 ns;	
-		a <= "00000000";
-		b <= "00000000";
+
       wait for clock_period*10;
 
-      a <= "00001101";
-		b <= "11111101";
-		wait for clock_period*2;
+      x <= "00000000";
+		y <= "00000000";
+      wait for clock_period*10;
+
+      x <= "00000100";
+		y <= "00000011"; 
 		
-		a <= "00000111";
-		b <= "00000101";
-		wait for clock_period*2;
+		 wait for clock_period*10;
+
+      x <= "00000010";
+		y <= "00001111"; 
 		
-		a <= "00000110";
-		b <= "00001100";
-		wait for clock_period*2;
+		 wait for clock_period*10;
+
+      x <= "10001100";
+		y <= "00100011"; 
 
       wait;
    end process;

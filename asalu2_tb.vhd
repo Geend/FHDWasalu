@@ -155,9 +155,8 @@ BEGIN
 		wait for clk_period*2;
 		cmd <= rlrA;
 		
-		--MUL
-		
-		
+		wait for clk_period*2;
+		cmd <= mul;
 		
 		wait for clk_period*2;
 		cmd <= zero;

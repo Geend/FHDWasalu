@@ -42,6 +42,7 @@ entity mux is
 			  aSubBCarry: in STD_LOGIC;
 			  bSubAResult : in STD_LOGIC_VECTOR (7 downto 0);
 			  bSubACarry: in STD_LOGIC;
+			  mulResult: in STD_LOGIC_VECTOR (15 downto 0);
            outlow : out  STD_LOGIC_VECTOR (7 downto 0);
            outhigh : out  STD_LOGIC_VECTOR (7 downto 0);
 			  cOut : out STD_LOGIC;
@@ -67,6 +68,7 @@ constant zero : std_logic_vector(3 downto 0) 	:= "1100";
 constant one : std_logic_vector(3 downto 0) 		:= "1101";
 
 signal result: std_logic_vector (7 downto 0) := "00000000";
+signal resultHigh: std_logic_vector (7 downto 0) := "00000000";
 
 begin
 
@@ -100,74 +102,77 @@ begin
 				when add =>					
 					
 					result <= addResult;
-					outhigh <= "00000000";
+					resultHigh <= "00000000";
 					cOut <= addCarry;
 					
 					
 				when AsubB =>
 					
 					result <= aSubBResult;
-					outhigh <= "00000000";
+					resultHigh <= "00000000";
 					cOut <= aSubBCarry;
 					
 				when BsubA =>
 
 					result <= bSubAResult;
-					outhigh <= "00000000";
+					resultHigh <= "00000000";
 					cOut <= bSubACarry;
 					
 				when idA =>
 					result <= a;
-					outhigh <= "00000000";
+					resultHigh <= "00000000";
 					cOut <= '0';
 					
 				when idB  =>
 					result <= b;
-					outhigh <= "00000000";
+					resultHigh <= "00000000";
 					cOut <= '0';
 					
 				when negA =>
 					result <= (not a) + 1;
-					outhigh <= "00000000";
+					resultHigh <= "00000000";
 					
 				when negB =>
 					result <= (not b) + 1;
-					outhigh <= "00000000";
+					resultHigh <= "00000000";
 					
 				when sllA =>
 					result(7 downto 1) <= a(6 downto 0);
 					result(0) <= '0';				
-					outhigh <= "00000000";
+					resultHigh <= "00000000";
 					
 				when slrA =>
 					result(6 downto 0) <= a(7 downto 1);
 					result(7) <= '0';	
-					outhigh <= "00000000";
+					resultHigh <= "00000000";
 					
 				when rllA =>
 					result(7 downto 1) <= a(6 downto 0);
 					result(0) <= a(7);
-					outhigh <= "00000000";
+					resultHigh <= "00000000";
 					
 				when rlrA =>
 					result(6 downto 0) <= a(7 downto 1);
 					result(7) <= a(0);
-					outhigh <= "00000000";
+					resultHigh <= "00000000";
 					
-				--when mul =>
-				
+				when mul =>
+					result <= mulResult(7 downto 0);
+					resultHigh <= mulResult(15 downto 8);
+					cOut <= '0';
 					
 				when zero =>
 					result <= "00000000";
-					outhigh <= "00000000";
+					resultHigh <= "00000000";
 					
 				when one =>
 					result <= "11111111";
-					outhigh <= "00000000";
+					resultHigh <= "00000000";
 
 				when others =>
 			end case;
 			outlow <= result;
+			outhigh <= resultHigh;
 		end if;
 	
 	end process;

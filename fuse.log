@@ -3,8 +3,9 @@ ISim P.20131013 (signature 0x7708f090)
 Number of CPUs detected in this system: 4
 Turning on mult-threading, number of parallel sub-compilation jobs: 8 
 Determining compilation order of HDL files
-Parsing VHDL file "D:/6.Semester/ES/Projekte/FHDWasalu/mux.vhd" into library work
 Parsing VHDL file "D:/6.Semester/ES/Projekte/FHDWasalu/claAdder.vhd" into library work
+Parsing VHDL file "D:/6.Semester/ES/Projekte/FHDWasalu/mux.vhd" into library work
+Parsing VHDL file "D:/6.Semester/ES/Projekte/FHDWasalu/multiplier.vhd" into library work
 Parsing VHDL file "D:/6.Semester/ES/Projekte/FHDWasalu/bSubA.vhd" into library work
 Parsing VHDL file "D:/6.Semester/ES/Projekte/FHDWasalu/aSubB.vhd" into library work
 Parsing VHDL file "D:/6.Semester/ES/Projekte/FHDWasalu/asalu2.vhd" into library work
@@ -18,12 +19,13 @@ Compiling package std_logic_unsigned
 Compiling architecture behavioral of entity claAdder [claadder_default]
 Compiling architecture behavioral of entity aSubB [asubb_default]
 Compiling architecture behavioral of entity bSubA [bsuba_default]
+Compiling architecture behavioral of entity multiplier [multiplier_default]
 Compiling architecture behavioral of entity mux [mux_default]
 Compiling architecture structural of entity asalu2 [asalu2_default]
 Compiling architecture behavior of entity asalu2_tb
 Time Resolution for simulation is 1ps.
-Waiting for 2 sub-compilation(s) to finish...
-Compiled 15 VHDL Units
+Waiting for 3 sub-compilation(s) to finish...
+Compiled 17 VHDL Units
 Built simulation executable D:/6.Semester/ES/Projekte/FHDWasalu/asalu2_tb_isim_beh.exe
-Fuse Memory Usage: 33316 KB
-Fuse CPU Usage: 592 ms
+Fuse Memory Usage: 33480 KB
+Fuse CPU Usage: 2324 ms

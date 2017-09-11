@@ -46,6 +46,7 @@ architecture structural of asalu2 is
 component claAdder is
 	port (a      		:  IN   STD_LOGIC_VECTOR(7 DOWNTO 0);
          b      		:  IN   STD_LOGIC_VECTOR(7 DOWNTO 0);
+			enable		:  IN	  STD_LOGIC;
          sum       	:  OUT  STD_LOGIC_VECTOR(7 DOWNTO 0);
          carry_out 	:  OUT  STD_LOGIC
         );
@@ -67,6 +68,13 @@ component bSubA is
         );
 end component;
 
+component multiplier is
+	port (w      		:  IN   STD_LOGIC_VECTOR(7 DOWNTO 0);
+         v      		:  IN   STD_LOGIC_VECTOR(7 DOWNTO 0);
+         result      :  OUT  STD_LOGIC_VECTOR(15 DOWNTO 0)
+        );
+end component;
+
 component mux is
 	port 	 (clk : in  STD_LOGIC;
 			  cmd : in STD_LOGIC_VECTOR (3 downto 0);
@@ -78,6 +86,7 @@ component mux is
 			  aSubBCarry: in STD_LOGIC;
 			  bSubAResult : in STD_LOGIC_VECTOR (7 downto 0);
 			  bSubACarry: in STD_LOGIC;
+			  mulResult: in STD_LOGIC_VECTOR (15 downto 0);
            outlow : out  STD_LOGIC_VECTOR (7 downto 0);
            outhigh : out  STD_LOGIC_VECTOR (7 downto 0);
 			  cOut : out STD_LOGIC;
@@ -92,11 +101,13 @@ signal resultASubB: STD_LOGIC_VECTOR (7 downto 0);
 signal carryASubB: STD_LOGIC;
 signal resultBSubA: STD_LOGIC_VECTOR (7 downto 0);
 signal carryBSubA: STD_LOGIC;
+signal resultMul: STD_LOGIC_VECTOR (15 downto 0);
 
 begin
 u1: claAdder
 port map (a => x,
 			 b => y,
+			 enable => '1',
 			 sum => resultAdd,
 			 carry_out => carryAdd
 			 );
@@ -115,7 +126,13 @@ port map (a => x,
 			 carry_out => carryBSubA
 			 );
 			 
-u4: mux
+u4: multiplier
+port map (w => x,
+			 v => y,
+			 result => resultMul
+			 );
+			 
+u5: mux
 port map (clk => clk,
 			 cmd => cmd,
 			 a  => x,
@@ -126,6 +143,7 @@ port map (clk => clk,
 			 aSubBCarry => carryASubB,
 			 bSubAResult => resultBSubA,
 			 bSubACarry => carryBSubA,
+			 mulResult => resultMul,
           outlow => flow,
           outhigh => fhigh,
 			 cout => coutF,
